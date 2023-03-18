@@ -20,16 +20,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapGet("/background", (
-    EmailBackgroundService service) =>
-{
-    return new PeriodicHostedServiceState(service.IsEnabled);
-});
 app.MapMethods("/background", new[] { "PATCH" }, (
     PeriodicHostedServiceState state,
     EmailBackgroundService service) =>
 {
     service.IsEnabled = state.IsEnabled;
+});
+
+app.MapMethods("/cancel", new[] {"PUT"}, (PeriodicHostedServiceState state,
+    EmailBackgroundService service) =>
+{
+    service.IsEnabled = state.IsEnabled;
+    service.Second = TimeSpan.FromSeconds(state.Time);
 });
 app.UseHttpsRedirection();
 

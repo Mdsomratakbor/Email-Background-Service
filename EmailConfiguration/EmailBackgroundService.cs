@@ -5,12 +5,13 @@
     public class EmailBackgroundService : BackgroundService
     {
         public bool IsEnabled { get; set; }
+        public TimeSpan Second { get; set; } = TimeSpan.FromSeconds(5);
 
         private readonly TimeSpan _period = TimeSpan.FromSeconds(600);
         private readonly ILogger<EmailBackgroundService> _logger;
         private readonly IServiceScopeFactory _factory;
         private int _executionCount = 0;
-     
+
 
         public EmailBackgroundService(
             ILogger<EmailBackgroundService> logger,
@@ -22,7 +23,7 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using PeriodicTimer timer = new PeriodicTimer(_period);
+            using PeriodicTimer timer = new PeriodicTimer(Second);
             while (
                 !stoppingToken.IsCancellationRequested &&
                 await timer.WaitForNextTickAsync(stoppingToken))
@@ -32,8 +33,8 @@
                     if (IsEnabled)
                     {
                         await using AsyncServiceScope asyncScope = _factory.CreateAsyncScope();
-                          SampleService sampleService = asyncScope.ServiceProvider.GetRequiredService<SampleService>();
-                         await sampleService.DoSomethingAsync();
+                        SampleService sampleService = asyncScope.ServiceProvider.GetRequiredService<SampleService>();
+                        await sampleService.DoSomethingAsync();
                         _executionCount++;
                         _logger.LogInformation(
                             $"Executed PeriodicHostedService - Count: {_executionCount}");
