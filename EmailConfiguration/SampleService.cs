@@ -27,11 +27,11 @@ namespace EmailConfiguration
             try
             {
      
-                string smail = "shakil.dev@excelbd.com";
-                string authToken = "ShakilE&*T!#80";
+                string smail = "";
+                string authToken = "";
                 var email = new MimeMessage();
                 email.From.Add(new MailboxAddress("Test Email For Schedule Mail", smail));
-                email.To.Add(MailboxAddress.Parse("baisyarpita01@gmail.com1"));
+                email.To.Add(MailboxAddress.Parse(""));
                 email.Subject = "Test Email For Schedule Mail";
                 var builder = new BodyBuilder();
                 builder.HtmlBody = "Test Email For Schedule Mail";
@@ -40,7 +40,7 @@ namespace EmailConfiguration
 
                 var fromEmailPassword = authToken;
                 var smtp = new SmtpClient();
-                smtp.Connect("smtp.yandex.com", Convert.ToInt32(587), SecureSocketOptions.StartTls);
+                smtp.Connect("", Convert.ToInt32(587), SecureSocketOptions.StartTls);
                 smtp.Authenticate(smail, fromEmailPassword);
                 await smtp.SendAsync(email);
                 smtp.Disconnect(true);
